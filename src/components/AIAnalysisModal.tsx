@@ -3,15 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Sparkles, X, RefreshCw } from 'lucide-react';
 
-interface Announcement {
-  id: string;
-  source_id?: string;
-  source_name?: string;
-  title: string;
-  link: string;
-  posted_date?: string;
-  notice_num?: number;
-}
+import type { Announcement } from '@/lib/supabase';
 
 interface AIAnalysisModalProps {
   isOpen: boolean;
@@ -46,7 +38,7 @@ export default function AIAnalysisModal({ isOpen, onClose, announcement }: AIAna
       const res = await fetch('/api/announcements/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ link: ann.link, title: ann.title })
+        body: JSON.stringify({ link: ann.link || ann.source_url || '', title: ann.title })
       });
       
       const data = await res.json();
@@ -141,7 +133,7 @@ export default function AIAnalysisModal({ isOpen, onClose, announcement }: AIAna
               )}
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
-                <a href={announcement.link} target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ padding: '10px 20px', textDecoration: 'none', width: 'auto' }}>
+                <a href={announcement.link || announcement.source_url || '#'} target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ padding: '10px 20px', textDecoration: 'none', width: 'auto' }}>
                   공지사항 원문 보기
                 </a>
               </div>

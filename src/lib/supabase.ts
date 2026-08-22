@@ -22,8 +22,12 @@ export type Policy = {
 
 export type Announcement = {
   id: string;
+  source_id?: string;
+  source_name?: string;
   title: string;
-  content_snippet: string;
-  posted_date: string;
-  source_url: string;
+  link?: string;
+  content_snippet?: string;
+  posted_date?: string;
+  notice_num?: number;
+  source_url?: string;
 };
