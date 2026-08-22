@@ -2,9 +2,10 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Search, Building, Calendar, Tag, Filter } from 'lucide-react';
+import { Search, Building, Calendar, Tag, Filter, RotateCcw } from 'lucide-react';
 import RegionSelect from '@/components/RegionSelect';
 import BookmarkButton from '@/components/BookmarkButton';
+import { getDDayBadge } from '@/utils/date';
 
 const REGION_CODES = [
   { code: '', name: '전국' },
@@ -116,14 +117,49 @@ function PoliciesContent() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleResetFilters = () => {
+    setKeyword('');
+    setZipCd('');
+    setCategory('');
+    setAge('');
+    setIncome('');
+    setMajor('');
+    setEdu('');
+    setJob('');
+    setMarriage('');
+  };
+
   return (
     <div style={{ maxWidth: '1200px', margin: '40px auto', padding: '0 20px', display: 'flex', gap: '30px', alignItems: 'flex-start' }} className="flex-col md:flex-row">
       
       {/* 좌측 사이드바 (상세 필터 영역) */}
       <aside className="glass-card" style={{ width: '100%', maxWidth: '320px', padding: '24px', flexShrink: 0, position: 'sticky', top: '20px', maxHeight: 'calc(100vh - 40px)', overflowY: 'auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '24px', paddingBottom: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-          <Filter className="w-5 h-5 text-gray-300" />
-          <h2 style={{ fontSize: '18px', fontWeight: 'bold', margin: 0 }}>상세 필터</h2>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', paddingBottom: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Filter className="w-5 h-5 text-gray-300" />
+            <h2 style={{ fontSize: '18px', fontWeight: 'bold', margin: 0 }}>상세 필터</h2>
+          </div>
+          <button
+            type="button"
+            onClick={handleResetFilters}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: 'var(--text-secondary)',
+              fontSize: '12px',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              padding: '4px 6px',
+              borderRadius: '4px',
+            }}
+            className="hover:text-[var(--accent-color)] transition-colors"
+            title="필터 초기화"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            초기화
+          </button>
         </div>
 
         <form onSubmit={(e) => { e.preventDefault(); searchPolicies(); }} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -253,32 +289,37 @@ function PoliciesContent() {
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {paginatedPolicies.map((policy, idx) => (
-              <div key={idx} className="glass-card result-card hover:border-[var(--accent-color)] transition-colors" style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '24px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                      <span className="result-badge policy">
-                        {policy.lclsfNm || '지원정책'} {policy.mclsfNm ? `> ${policy.mclsfNm}` : ''}
-                      </span>
-                      <span style={{ fontSize: '12px', padding: '4px 10px', backgroundColor: 'rgba(255, 255, 255, 0.05)', color: 'var(--text-secondary)', borderRadius: '100px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <Building className="w-3 h-3" />
-                        {policy.sprvsnInstCdNm || policy.operInstCdNm || '기관명 없음'}
-                      </span>
+            {paginatedPolicies.map((policy, idx) => {
+              const dday = getDDayBadge(policy.aplyYmd);
+              return (
+                <div key={idx} className="glass-card result-card hover:border-[var(--accent-color)] transition-colors" style={{ display: 'flex', flexDirection: 'column', gap: '16px', padding: '24px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+                        <span className="result-badge policy">
+                          {policy.lclsfNm || '지원정책'} {policy.mclsfNm ? `> ${policy.mclsfNm}` : ''}
+                        </span>
+                        <span className={`dday-badge dday-${dday.type}`}>
+                          {dday.text}
+                        </span>
+                        <span style={{ fontSize: '12px', padding: '4px 10px', backgroundColor: 'rgba(255, 255, 255, 0.05)', color: 'var(--text-secondary)', borderRadius: '100px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <Building className="w-3 h-3" />
+                          {policy.sprvsnInstCdNm || policy.operInstCdNm || '기관명 없음'}
+                        </span>
+                      </div>
+                      
+                      <h4 style={{ fontSize: '20px', fontWeight: 'bold', margin: '0', color: 'var(--text-primary)' }}>
+                        {policy.plcyNm || '정책명 없음'}
+                      </h4>
                     </div>
-                    
-                    <h4 style={{ fontSize: '20px', fontWeight: 'bold', margin: '0', color: 'var(--text-primary)' }}>
-                      {policy.plcyNm || '정책명 없음'}
-                    </h4>
+                    <BookmarkButton 
+                      id={policy.bizId || policy.plcyNm}
+                      title={policy.plcyNm || '정책명 없음'}
+                      desc={policy.plcyExplnCn || policy.plcySprtCn || '정책 소개가 없습니다.'}
+                      link={policy.aplyUrlAddr || policy.refUrlAddr1 || '#'}
+                      type="policy"
+                    />
                   </div>
-                  <BookmarkButton 
-                    id={policy.bizId || policy.plcyNm}
-                    title={policy.plcyNm || '정책명 없음'}
-                    desc={policy.plcyExplnCn || policy.plcySprtCn || '정책 소개가 없습니다.'}
-                    link={policy.aplyUrlAddr || policy.refUrlAddr1 || '#'}
-                    type="policy"
-                  />
-                </div>
                 
                 <p style={{ color: 'var(--text-secondary)', fontSize: '15px', lineHeight: '1.6', margin: 0 }}>
                   {policy.plcyExplnCn || policy.plcySprtCn || '정책 소개가 없습니다.'}
@@ -311,7 +352,8 @@ function PoliciesContent() {
                   </a>
                 </div>
               </div>
-            ))}
+            );
+          })}
             
             {/* 페이지네이션 UI */}
             {totalPages > 1 && (

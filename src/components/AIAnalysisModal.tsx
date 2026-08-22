@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { Sparkles, X, RefreshCw } from 'lucide-react';
+import { Sparkles, X, RefreshCw, Copy, Check } from 'lucide-react';
+import { useToast } from '@/components/Toast';
 
 import type { Announcement } from '@/lib/supabase';
 
@@ -12,10 +13,12 @@ interface AIAnalysisModalProps {
 }
 
 export default function AIAnalysisModal({ isOpen, onClose, announcement }: AIAnalysisModalProps) {
+  const { showToast } = useToast();
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [aiResult, setAiResult] = useState<any>(null);
   const [aiError, setAiError] = useState<string | null>(null);
   const [recommendedPolicies, setRecommendedPolicies] = useState<any[]>([]);
+  const [isCopied, setIsCopied] = useState(false);
 
   useEffect(() => {
     if (isOpen && announcement) {
@@ -62,6 +65,34 @@ export default function AIAnalysisModal({ isOpen, onClose, announcement }: AIAna
       setAiError(err.message);
     } finally {
       setIsAnalyzing(false);
+    }
+  };
+
+  const handleCopySummary = async () => {
+    if (!aiResult || !announcement) return;
+
+    const copyText = `📌 [Scholar AI 공지 요약]
+제목: ${announcement.title}
+⏰ 마감일: ${aiResult.deadline || '일정 확인 필요'}
+🎯 지원대상: ${aiResult.target || '해당자'}
+📝 핵심요약:
+${aiResult.summary}
+
+🔗 원문 링크: ${announcement.link || announcement.source_url || ''}`;
+
+    try {
+      await navigator.clipboard.writeText(copyText);
+      setIsCopied(true);
+      showToast({
+        message: 'AI 공지 요약이 클립보드에 복사되었습니다!',
+        type: 'success',
+      });
+      setTimeout(() => setIsCopied(false), 2500);
+    } catch (err) {
+      showToast({
+        message: '클립보드 복사에 실패했습니다.',
+        type: 'info',
+      });
     }
   };
 
@@ -132,8 +163,39 @@ export default function AIAnalysisModal({ isOpen, onClose, announcement }: AIAna
                 </div>
               )}
 
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
-                <a href={announcement.link || announcement.source_url || '#'} target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ padding: '10px 20px', textDecoration: 'none', width: 'auto' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px', flexWrap: 'wrap' }}>
+                <button
+                  onClick={handleCopySummary}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '10px 16px',
+                    borderRadius: '8px',
+                    background: isCopied ? 'rgba(16, 185, 129, 0.2)' : 'var(--glass-bg)',
+                    border: `1px solid ${isCopied ? 'rgba(16, 185, 129, 0.5)' : 'var(--glass-border)'}`,
+                    color: isCopied ? '#34d399' : 'var(--text-primary)',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                  }}
+                  className="hover:scale-105"
+                >
+                  {isCopied ? (
+                    <>
+                      <Check className="w-4 h-4 text-emerald-400" />
+                      <span>요약 복사완료!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-4 h-4 text-blue-400" />
+                      <span>요약 내용 복사</span>
+                    </>
+                  )}
+                </button>
+
+                <a href={announcement.link || announcement.source_url || '#'} target="_blank" rel="noopener noreferrer" className="btn-primary" style={{ padding: '10px 20px', textDecoration: 'none', width: 'auto', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
                   공지사항 원문 보기
                 </a>
               </div>

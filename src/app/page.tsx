@@ -7,6 +7,7 @@ import RegionSelect from '@/components/RegionSelect';
 import BookmarkButton from '@/components/BookmarkButton';
 import AIAnalysisModal from '@/components/AIAnalysisModal';
 import type { Announcement } from "@/lib/supabase";
+import { getDDayBadge } from '@/utils/date';
 
 const REGION_CODES = [
   { code: '', name: '전국' },
@@ -445,29 +446,46 @@ export default function Home() {
             </div>
           ) : (
             <div className="results-grid">
-              {previewPolicies.map((policy, idx) => (
-                <div key={idx} className="glass-card result-card">
-                  <span className="result-badge policy">
-                    {policy.lclsfNm || '지원정책'}
-                  </span>
-                  <h4 className="result-title" style={{ marginTop: '12px' }}>{policy.plcyNm || '정책명 없음'}</h4>
-                  <p className="result-desc" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                    {policy.plcyExplnCn || policy.plcySprtCn || '정책 소개가 없습니다.'}
-                  </p>
-                  <div className="result-meta">
-                    <span>• 기관: {policy.sprvsnInstCdNm || policy.operInstCdNm || '기관명 없음'}</span>
-                    {policy.aplyYmd && <span>• 마감일: {policy.aplyYmd}</span>}
+              {previewPolicies.map((policy, idx) => {
+                const dday = getDDayBadge(policy.aplyYmd);
+                return (
+                  <div key={idx} className="glass-card result-card">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
+                      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', alignItems: 'center' }}>
+                        <span className="result-badge policy">
+                          {policy.lclsfNm || '지원정책'}
+                        </span>
+                        <span className={`dday-badge dday-${dday.type}`}>
+                          {dday.text}
+                        </span>
+                      </div>
+                      <BookmarkButton 
+                        id={policy.bizId || policy.plcyNm}
+                        title={policy.plcyNm || '정책명 없음'}
+                        desc={policy.plcyExplnCn || policy.plcySprtCn || '정책 소개가 없습니다.'}
+                        link={policy.aplyUrlAddr || policy.refUrlAddr1 || '#'}
+                        type="policy"
+                      />
+                    </div>
+                    <h4 className="result-title" style={{ marginTop: '12px' }}>{policy.plcyNm || '정책명 없음'}</h4>
+                    <p className="result-desc" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                      {policy.plcyExplnCn || policy.plcySprtCn || '정책 소개가 없습니다.'}
+                    </p>
+                    <div className="result-meta">
+                      <span>• 기관: {policy.sprvsnInstCdNm || policy.operInstCdNm || '기관명 없음'}</span>
+                      {policy.aplyYmd && <span>• 마감일: {policy.aplyYmd}</span>}
+                    </div>
+                    <a 
+                      href={policy.aplyUrlAddr || policy.refUrlAddr1 || '#'} 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="result-link"
+                    >
+                      자세히 보기 →
+                    </a>
                   </div>
-                  <a 
-                    href={policy.aplyUrlAddr || policy.refUrlAddr1 || '#'} 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="result-link"
-                  >
-                    자세히 보기 →
-                  </a>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
           {previewPolicies.length > 0 && (
