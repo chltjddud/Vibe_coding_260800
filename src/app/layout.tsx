@@ -16,6 +16,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://vibe-coding-260800.vercel.app'),
   title: "Scholar | 맞춤형 청년 정책 & AI 공지사항 분석 플랫폼",
   description: "거주지, 나이, 취업상태 등 내 조건을 입력하고 딱 맞는 국가 청년 정책과 학교 장학 공지사항을 AI로 분석/탐색하세요.",
   keywords: ["청년정책", "장학금", "맞춤형지원", "온통청년", "공지사항요약", "AI분석", "Scholar"],
