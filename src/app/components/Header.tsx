@@ -34,6 +34,7 @@ export default function Header() {
           <Link href="/" className="nav-link">맞춤 검색</Link>
           <Link href="/policies" className="nav-link">정책 전체보기</Link>
           <Link href="/announcements" className="nav-link">공지사항</Link>
+          <Link href="/bookmarks" className="nav-link">내 보관함</Link>
           <button onClick={toggleTheme} className="theme-toggle" aria-label="테마 변경">
             {theme === "dark" ? "라이트 모드" : "다크 모드"}
           </button>

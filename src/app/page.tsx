@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Search, Building, Calendar, ChevronRight } from 'lucide-react';
+import { Search, Building, Calendar, ChevronRight, Sparkles } from 'lucide-react';
 import RegionSelect from '@/components/RegionSelect';
+import BookmarkButton from '@/components/BookmarkButton';
+import AIAnalysisModal from '@/components/AIAnalysisModal';
 import type { Announcement } from "@/lib/supabase";
 
 const REGION_CODES = [
@@ -54,6 +56,15 @@ export default function Home() {
   const [customAIKeyword, setCustomAIKeyword] = useState('');
   const [progressMsg, setProgressMsg] = useState('상황 분석 중...');
   const router = useRouter();
+
+  // AI 분석 모달 상태
+  const [selectedAnn, setSelectedAnn] = useState<Announcement | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleAIAnalyze = (ann: Announcement) => {
+    setSelectedAnn(ann);
+    setIsModalOpen(true);
+  };
 
   useEffect(() => {
     const fetchAnnouncements = async () => {
@@ -506,14 +517,37 @@ export default function Home() {
                     {ann.title}
                   </a>
                 </div>
-                <span style={{ color: 'var(--text-secondary)', fontSize: '14px', whiteSpace: 'nowrap', marginLeft: '16px' }}>
-                  {ann.posted_date ? ann.posted_date.replace(/-/g, '.').slice(0, 10) : '-'}
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginLeft: '16px' }}>
+                  <span style={{ color: 'var(--text-secondary)', fontSize: '14px', whiteSpace: 'nowrap' }}>
+                    {ann.posted_date ? ann.posted_date.replace(/-/g, '.').slice(0, 10) : '-'}
+                  </span>
+                  <button
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleAIAnalyze(ann); }}
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 'bold', padding: '6px 10px', borderRadius: '100px', background: 'var(--accent-color)', color: 'white', border: 'none', cursor: 'pointer', whiteSpace: 'nowrap' }}
+                    className="hover:scale-105 transition-transform"
+                  >
+                    <Sparkles className="w-3 h-3" /> AI 분석
+                  </button>
+                  <BookmarkButton 
+                    id={ann.id.toString()}
+                    title={ann.title}
+                    desc={ann.source_name}
+                    link={ann.link}
+                    type="announcement"
+                  />
+                </div>
               </div>
             ))
           )}
         </div>
       </section>
+
+      {/* AI 모달 */}
+      <AIAnalysisModal 
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        announcement={selectedAnn}
+      />
     </>
   );
 }

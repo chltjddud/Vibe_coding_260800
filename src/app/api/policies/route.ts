@@ -58,12 +58,9 @@ export async function GET(request: Request) {
     
     const isTitleOnly = searchParams.get('titleOnly') !== 'false';
     
-    // 일반 검색일 때만 외부 API에 키워드를 넘깁니다. 
-    // AI 검색(titleOnly=false)일 때는 외부 API의 엄격한 키워드 필터링 때문에 0건이 반환되는 것을 막기 위해
-    // 일단 지역/나이로 100건을 가져온 뒤, 아래의 자체 로직(제목+내용 검색)으로 필터링합니다.
-    if (keyword && isTitleOnly) {
-      apiUrl += `&plcyKywdNm=${encodeURIComponent(keyword)}`;
-    }
+    // 외부 API의 키워드 검색(plcyKywdNm)이 매우 불안정하여 0건을 반환하는 버그가 있으므로,
+    // 키워드를 API에 직접 넘기지 않고 지역/분야 등으로 100건을 가져온 뒤 
+    // 아래의 자체 로직(제목/내용 검색)으로만 필터링합니다.
     
     if (zipCd) apiUrl += `&zipCd=${encodeURIComponent(zipCd)}`;
     if (category) apiUrl += `&lclsfNm=${encodeURIComponent(category)}`;

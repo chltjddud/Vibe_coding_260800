@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Search, Building, Calendar, Tag, Filter } from 'lucide-react';
 import RegionSelect from '@/components/RegionSelect';
+import BookmarkButton from '@/components/BookmarkButton';
 
 const REGION_CODES = [
   { code: '', name: '전국' },
@@ -270,6 +271,13 @@ function PoliciesContent() {
                       {policy.plcyNm || '정책명 없음'}
                     </h4>
                   </div>
+                  <BookmarkButton 
+                    id={policy.bizId || policy.plcyNm}
+                    title={policy.plcyNm || '정책명 없음'}
+                    desc={policy.plcyExplnCn || policy.plcySprtCn || '정책 소개가 없습니다.'}
+                    link={policy.aplyUrlAddr || policy.refUrlAddr1 || '#'}
+                    type="policy"
+                  />
                 </div>
                 
                 <p style={{ color: 'var(--text-secondary)', fontSize: '15px', lineHeight: '1.6', margin: 0 }}>
