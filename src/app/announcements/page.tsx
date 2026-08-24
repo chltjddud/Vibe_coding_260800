@@ -25,6 +25,22 @@ export default function AnnouncementsPage() {
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
 
+  // 관리자(동기화) 버튼 표시 상태 (이스터에그)
+  const [clickCount, setClickCount] = useState(0);
+  const [showAdminBtn, setShowAdminBtn] = useState(false);
+
+  useEffect(() => {
+    if (clickCount > 0 && clickCount < 5) {
+      // 1초 안에 다음 클릭이 없으면 초기화
+      const timer = setTimeout(() => setClickCount(0), 1000);
+      return () => clearTimeout(timer);
+    }
+    if (clickCount >= 5) {
+      setShowAdminBtn(true);
+      setClickCount(0); // 표시 후 리셋
+    }
+  }, [clickCount]);
+
   // 필터 상태 (기본적으로 모두 선택)
   const [filters, setFilters] = useState({
     ai: true,
@@ -138,7 +154,10 @@ export default function AnnouncementsPage() {
         </Link>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: '8px' }}>
           <div style={{ flex: 1, minWidth: '240px' }}>
-            <h1 style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: '700', margin: '0 0 8px 0', wordBreak: 'keep-all', lineHeight: '1.3' }}>
+            <h1 
+              onClick={() => setClickCount(prev => prev + 1)}
+              style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: '700', margin: '0 0 8px 0', wordBreak: 'keep-all', lineHeight: '1.3', userSelect: 'none', cursor: 'default' }}
+            >
               학교 주요 공지사항 전체보기
             </h1>
             <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: '14px', wordBreak: 'keep-all' }}>
@@ -146,16 +165,18 @@ export default function AnnouncementsPage() {
               {!loading && <span style={{ marginLeft: '8px' }}>총 <strong>{total}</strong>개</span>}
             </p>
           </div>
-          <button
-            onClick={handleSyncNow}
-            disabled={isSyncing}
-            className="sync-btn"
-            title="순천대 최신 공지사항을 지금 즉시 스크래핑하여 Supabase에 저장합니다."
-            style={{ flexShrink: 0 }}
-          >
-            <RefreshCw className={`w-4 h-4 text-blue-400 ${isSyncing ? 'animate-spin' : ''}`} />
-            <span>{isSyncing ? '동기화 중...' : '최신 공지 동기화'}</span>
-          </button>
+          {showAdminBtn && (
+            <button
+              onClick={handleSyncNow}
+              disabled={isSyncing}
+              className="sync-btn"
+              title="순천대 최신 공지사항을 지금 즉시 스크래핑하여 Supabase에 저장합니다."
+              style={{ flexShrink: 0 }}
+            >
+              <RefreshCw className={`w-4 h-4 text-blue-400 ${isSyncing ? 'animate-spin' : ''}`} />
+              <span>{isSyncing ? '동기화 중...' : '최신 공지 동기화'}</span>
+            </button>
+          )}
         </div>
       </div>
 
