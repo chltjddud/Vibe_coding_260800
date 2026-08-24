@@ -596,18 +596,145 @@ body {
   color: #ffffff;
 }
 
-/* ─── 모바일 반응형 최적화 ─── */
+/* ─── 공지사항 반응형 카드 스타일 ─── */
+.announcement-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  border-radius: var(--radius-md);
+}
+
+.announcement-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.announcement-source {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--accent-color);
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-weight: 600;
+}
+
+.announcement-title {
+  font-weight: 500;
+  color: inherit;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 15px;
+  transition: color 0.2s ease;
+}
+
+.announcement-title:hover {
+  color: var(--accent-color);
+}
+
+.announcement-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.announcement-date {
+  color: var(--text-secondary);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.ai-analyze-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 100px;
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ai-analyze-btn:hover {
+  transform: scale(1.04);
+  box-shadow: 0 4px 12px var(--accent-glow);
+}
+
+/* ─── 실시간 동기화 버튼 ─── */
+.sync-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.sync-btn:hover:not(:disabled) {
+  border-color: var(--accent-color);
+  background: rgba(59, 130, 246, 0.12);
+  color: var(--accent-color);
+}
+
+.sync-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ─── 모바일 반응형 전면 최적화 ─── */
 @media (max-width: 768px) {
+  .hero-title {
+    font-size: 1.85rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 12px !important;
+  }
+
+  .hero-subtitle {
+    font-size: 0.95rem !important;
+    line-height: 1.5 !important;
+    margin-bottom: 24px !important;
+  }
+
+  .glass-card {
+    padding: 20px 16px !important;
+    border-radius: 14px !important;
+  }
+
+  .grid-2 {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
   .header-content {
-    padding: 0 12px;
+    padding: 0 10px;
   }
 
   .logo {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .header-nav {
-    gap: 4px;
+    gap: 2px;
   }
 
   .nav-link {
@@ -617,7 +744,7 @@ body {
   }
 
   .nav-link span {
-    display: none; /* 모바일에서는 아이콘만 표시하거나 텍스트 축약 */
+    display: none;
   }
 
   .theme-toggle {
@@ -631,7 +758,48 @@ body {
   }
 
   .main-content {
-    padding: 85px 12px 30px;
+    padding: 80px 12px 30px;
+  }
+
+  /* 모바일 공지사항 카드 레이아웃: 3단 카드 형태로 자동 변환 */
+  .announcement-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 10px !important;
+    padding: 16px 14px !important;
+  }
+
+  .announcement-main {
+    width: 100% !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  .announcement-title {
+    white-space: normal !important;
+    line-height: 1.4 !important;
+    font-size: 14.5px !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  .announcement-actions {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-left: 0 !important;
+    padding-top: 8px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+  }
+
+  .results-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    margin-top: 24px !important;
   }
 
   .toast-container {
@@ -645,7 +813,8 @@ body {
 
 @media (min-width: 769px) {
   .nav-icon {
-    display: none; /* 데스크톱에서는 텍스트 위주로 깔끔하게 */
+    display: none;
   }
 }
+
 

@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { RefreshCw, Search, Sparkles, Building, Calendar } from 'lucide-react';
+import { RefreshCw, Search, Sparkles, Building, Calendar, CheckCircle2 } from 'lucide-react';
 import BookmarkButton from '@/components/BookmarkButton';
 import AIAnalysisModal from '@/components/AIAnalysisModal';
+import { useToast } from '@/components/Toast';
 
 type Announcement = {
   id: string;
@@ -17,8 +18,10 @@ type Announcement = {
 };
 
 export default function AnnouncementsPage() {
+  const { showToast } = useToast();
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
 
@@ -92,35 +95,83 @@ export default function AnnouncementsPage() {
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   })();
 
+  // 최신 공지사항 수동 실시간 동기화
+  const handleSyncNow = async () => {
+    if (isSyncing) return;
+    setIsSyncing(true);
+    showToast({
+      message: '순천대 공지사항 크롤링 및 Supabase 동기화를 시작합니다...',
+      type: 'info',
+    });
+
+    try {
+      const res = await fetch('/api/cron/scrape', { method: 'POST' });
+      const data = await res.json();
+      if (data.success) {
+        showToast({
+          message: data.message || '최신 공지사항이 Supabase에 성공적으로 갱신되었습니다!',
+          type: 'success',
+        });
+        // 최신 목록 다시 불러오기
+        await fetchAnnouncements(currentPage, filters);
+      } else {
+        showToast({
+          message: `동기화 완료 (일부 오류): ${data.message}`,
+          type: 'info',
+        });
+      }
+    } catch (err: any) {
+      showToast({
+        message: '동기화 요청 중 오류가 발생했습니다.',
+        type: 'info',
+      });
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '40px 20px' }}>
       <div style={{ marginBottom: '32px' }}>
         <Link href="/" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '14px' }}>
           ← 메인으로 돌아가기
         </Link>
-        <h1 style={{ fontSize: '32px', fontWeight: '700', marginTop: '16px', marginBottom: '8px' }}>
-          학교 주요 공지사항 전체보기
-        </h1>
-        <p style={{ color: 'var(--text-secondary)' }}>
-          학교 본부, SW중심대학, AI인재양성 사업단의 공지사항을 한 곳에서 모아보세요.
-          {!loading && <span style={{ marginLeft: '8px' }}>총 <strong>{total}</strong>개</span>}
-        </p>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginTop: '16px', marginBottom: '8px' }}>
+          <div>
+            <h1 style={{ fontSize: '32px', fontWeight: '700', margin: '0 0 8px 0' }}>
+              학교 주요 공지사항 전체보기
+            </h1>
+            <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
+              학교 본부, SW중심대학, AI인재양성 사업단의 공지사항을 한 곳에서 모아보세요.
+              {!loading && <span style={{ marginLeft: '8px' }}>총 <strong>{total}</strong>개</span>}
+            </p>
+          </div>
+          <button
+            onClick={handleSyncNow}
+            disabled={isSyncing}
+            className="sync-btn"
+            title="순천대 최신 공지사항을 지금 즉시 스크래핑하여 Supabase에 저장합니다."
+          >
+            <RefreshCw className={`w-4 h-4 text-blue-400 ${isSyncing ? 'animate-spin' : ''}`} />
+            <span>{isSyncing ? '동기화 중...' : '최신 공지 동기화'}</span>
+          </button>
+        </div>
       </div>
 
       {/* 필터 영역 */}
-      <div className="glass-card" style={{ marginBottom: '24px', padding: '20px', display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
-        <span style={{ fontWeight: '600' }}>출처 필터:</span>
+      <div className="glass-card" style={{ marginBottom: '24px', padding: '16px 20px', display: 'flex', gap: '20px', flexWrap: 'wrap', alignItems: 'center' }}>
+        <span style={{ fontWeight: '600', fontSize: '14px' }}>출처 필터:</span>
         {([
           { key: 'main', label: '학교 메인 공지' },
           { key: 'ai', label: 'AI인재양성' },
           { key: 'sw', label: 'SW중심대학' },
         ] as const).map(({ key, label }) => (
-          <label key={key} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', userSelect: 'none' }}>
+          <label key={key} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', userSelect: 'none', fontSize: '14px' }}>
             <input
               type="checkbox"
               checked={filters[key]}
               onChange={() => toggleFilter(key)}
-              style={{ width: '18px', height: '18px', accentColor: 'var(--accent-color)' }}
+              style={{ width: '16px', height: '16px', accentColor: 'var(--accent-color)' }}
             />
             {label}
           </label>
@@ -139,39 +190,27 @@ export default function AnnouncementsPage() {
           </div>
         ) : (
           announcements.map(ann => (
-            <div key={ann.id} className="glass-card" style={{ padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'transform 0.15s', cursor: 'pointer' }}
-              onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-2px)')}
-              onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, overflow: 'hidden' }}>
-                <span style={{
-                  fontSize: '12px',
-                  padding: '4px 8px',
-                  borderRadius: '4px',
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  color: 'var(--accent-color)',
-                  whiteSpace: 'nowrap',
-                  flexShrink: 0,
-                }}>
+            <div key={ann.id} className="glass-card announcement-row">
+              <div className="announcement-main">
+                <span className="announcement-source">
                   {ann.source_name}
                 </span>
                 <a
                   href={ann.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  style={{ fontWeight: '500', color: 'inherit', textDecoration: 'none', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}
+                  className="announcement-title"
                 >
                   {ann.title}
                 </a>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginLeft: '16px' }}>
-                <span style={{ color: 'var(--text-secondary)', fontSize: '14px', whiteSpace: 'nowrap' }}>
+              <div className="announcement-actions">
+                <span className="announcement-date">
                   {ann.posted_date ? ann.posted_date.replace(/-/g, '.').slice(0, 10) : '-'}
                 </span>
                 <button
                   onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleAIAnalyze(ann); }}
-                  style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 'bold', padding: '6px 10px', borderRadius: '100px', background: 'var(--accent-color)', color: 'white', border: 'none', cursor: 'pointer', whiteSpace: 'nowrap' }}
-                  className="hover:scale-105 transition-transform"
+                  className="ai-analyze-btn"
                 >
                   <Sparkles className="w-3 h-3" /> AI 분석
                 </button>

@@ -513,36 +513,27 @@ export default function Home() {
             </div>
           ) : (
             announcements.slice(0, 5).map((ann: any) => (
-              <div key={ann.id} className="glass-card" style={{ padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, overflow: 'hidden' }}>
-                  <span style={{ 
-                    fontSize: '12px', 
-                    padding: '4px 8px', 
-                    borderRadius: '4px', 
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                    color: 'var(--accent-color)',
-                    whiteSpace: 'nowrap'
-                  }}>
+              <div key={ann.id} className="glass-card announcement-row">
+                <div className="announcement-main">
+                  <span className="announcement-source">
                     {ann.source_name}
                   </span>
                   <a 
                     href={ann.link} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    style={{ fontWeight: '500', color: 'inherit', textDecoration: 'none', textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap' }}
-                    className="hover:text-[var(--accent-color)] transition-colors"
+                    className="announcement-title"
                   >
                     {ann.title}
                   </a>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginLeft: '16px' }}>
-                  <span style={{ color: 'var(--text-secondary)', fontSize: '14px', whiteSpace: 'nowrap' }}>
+                <div className="announcement-actions">
+                  <span className="announcement-date">
                     {ann.posted_date ? ann.posted_date.replace(/-/g, '.').slice(0, 10) : '-'}
                   </span>
                   <button
                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleAIAnalyze(ann); }}
-                    style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 'bold', padding: '6px 10px', borderRadius: '100px', background: 'var(--accent-color)', color: 'white', border: 'none', cursor: 'pointer', whiteSpace: 'nowrap' }}
-                    className="hover:scale-105 transition-transform"
+                    className="ai-analyze-btn"
                   >
                     <Sparkles className="w-3 h-3" /> AI 분석
                   </button>

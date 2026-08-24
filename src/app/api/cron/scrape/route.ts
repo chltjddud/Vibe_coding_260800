@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import * as cheerio from 'cheerio';
 import { createClient } from '@supabase/supabase-js';
 
+export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
+
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -101,5 +104,11 @@ export async function GET() {
     success: results.errors.length === 0,
     message: `총 ${results.total}개 처리, ${results.inserted}개 저장 완료`,
     errors: results.errors,
+    updatedAt: new Date().toISOString(),
   });
 }
+
+export async function POST() {
+  return GET();
+}
+
