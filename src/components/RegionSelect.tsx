@@ -31,22 +31,24 @@ export default function RegionSelect({ options, value, onChange, className }: Re
   const selectedOption = options.find(opt => opt.code === value) || options[0];
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', width: '100%' }}>
+    <div ref={containerRef} style={{ position: 'relative', width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
       <button
         type="button"
-        className={className || "form-select w-full"}
+        className={className || "form-select"}
         style={{ 
           display: 'flex', 
           justifyContent: 'space-between', 
           alignItems: 'center', 
           cursor: 'pointer',
           textAlign: 'left',
-          width: '100%'
+          width: '100%',
+          boxSizing: 'border-box',
+          minWidth: 0,
         }}
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span style={{ color: 'var(--text-primary)' }}>{selectedOption?.name}</span>
-        <span style={{ fontSize: '10px', color: 'var(--text-secondary)' }}>▼</span>
+        <span style={{ color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{selectedOption?.name}</span>
+        <span style={{ fontSize: '10px', color: 'var(--text-secondary)', marginLeft: '8px', flexShrink: 0 }}>▼</span>
       </button>
 
       {isOpen && (
