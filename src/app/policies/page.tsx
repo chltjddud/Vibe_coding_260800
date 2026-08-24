@@ -29,12 +29,12 @@ const REGION_CODES = [
 ];
 
 const CATEGORIES = [
-  { value: '', name: '전체', icon: '✨' },
-  { value: '일자리', name: '일자리', icon: '💼' },
-  { value: '주거', name: '주거', icon: '🏠' },
-  { value: '교육', name: '교육', icon: '🎓' },
-  { value: '복지.문화', name: '복지·문화', icon: '🎨' },
-  { value: '참여.권리', name: '참여·권리', icon: '⚖️' },
+  { value: '', name: '전체' },
+  { value: '일자리', name: '일자리' },
+  { value: '주거', name: '주거' },
+  { value: '교육', name: '교육' },
+  { value: '복지.문화', name: '복지·문화' },
+  { value: '참여.권리', name: '참여·권리' },
 ];
 
 function PoliciesContent() {
@@ -207,7 +207,7 @@ function PoliciesContent() {
         </button>
       </form>
 
-      {/* 2. 원터치 카테고리 칩 가로 스크롤 */}
+      {/* 2. 원터치 카테고리 칩 가로 스크롤 (이모티콘 없이 깔끔한 텍스트 칩) */}
       <div className="category-scroll-container" style={{ marginBottom: '14px' }}>
         {CATEGORIES.map((cat) => {
           const isActive = category === cat.value;
@@ -218,67 +218,66 @@ function PoliciesContent() {
               className={`category-chip ${isActive ? 'active' : ''}`}
               onClick={() => handleCategoryClick(cat.value)}
             >
-              <span>{cat.icon}</span>
               <span>{cat.name}</span>
             </button>
           );
         })}
       </div>
 
-      {/* 3. 모바일 상세 필터 바텀시트 열기 버튼 */}
-      <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '16px' }}>
+      {/* 3. 모바일 상세 필터 & 초기화 버튼 (50:50 완벽한 동일 비율) */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '16px' }}>
         <button
           type="button"
           onClick={() => setIsMobileFilterOpen(true)}
           className="glass-card"
           style={{
-            flex: 1,
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '10px 14px',
+            justifyContent: 'center',
+            gap: '6px',
+            padding: '12px 14px',
             borderRadius: '12px',
             cursor: 'pointer',
             border: activeFilterCount > 0 ? '1px solid var(--accent-color)' : '1px solid var(--glass-border)',
             background: activeFilterCount > 0 ? 'rgba(59, 130, 246, 0.12)' : 'var(--glass-bg)',
+            boxSizing: 'border-box',
+            width: '100%',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <SlidersHorizontal className="w-4 h-4 text-[var(--accent-color)]" />
-            <span style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-primary)' }}>상세 조건 필터</span>
-            {activeFilterCount > 0 && (
-              <span style={{ background: 'var(--accent-color)', color: 'white', fontSize: '11px', fontWeight: 'bold', padding: '2px 6px', borderRadius: '20px' }}>
-                {activeFilterCount}
-              </span>
-            )}
-          </div>
-          <span style={{ fontSize: '12px', color: 'var(--accent-color)', fontWeight: '600' }}>
-            설정 ⚙️
-          </span>
+          <SlidersHorizontal className="w-4 h-4 text-[var(--accent-color)]" />
+          <span style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-primary)' }}>상세 조건 필터</span>
+          {activeFilterCount > 0 && (
+            <span style={{ background: 'var(--accent-color)', color: 'white', fontSize: '11px', fontWeight: 'bold', padding: '1px 6px', borderRadius: '20px' }}>
+              {activeFilterCount}
+            </span>
+          )}
         </button>
 
-        {activeFilterCount > 0 && (
-          <button
-            type="button"
-            onClick={() => { handleResetFilters(); searchPolicies(); }}
-            className="glass-card"
-            style={{
-              padding: '10px 12px',
-              borderRadius: '12px',
-              color: 'var(--text-secondary)',
-              fontSize: '12px',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              whiteSpace: 'nowrap',
-            }}
-            title="필터 초기화"
-          >
-            <RotateCcw className="w-3.5 h-3.5" />
-            초기화
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={() => { handleResetFilters(); searchPolicies(); }}
+          className="glass-card"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px',
+            padding: '12px 14px',
+            borderRadius: '12px',
+            color: 'var(--text-secondary)',
+            fontSize: '13px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            border: '1px solid var(--glass-border)',
+            background: 'var(--glass-bg)',
+            boxSizing: 'border-box',
+            width: '100%',
+          }}
+          title="필터 초기화"
+        >
+          <RotateCcw className="w-4 h-4" />
+          <span>초기화</span>
+        </button>
       </div>
 
       {/* 4. 모바일 정책 결과 목록 */}
@@ -773,7 +772,7 @@ function PoliciesContent() {
                   onClick={() => setIsMobileFilterOpen(false)}
                   style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'var(--text-primary)', width: '28px', height: '28px', borderRadius: '50%', cursor: 'pointer', fontSize: '13px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                 >
-                  ✕
+                  <X className="w-4 h-4" />
                 </button>
               </div>
             </div>
