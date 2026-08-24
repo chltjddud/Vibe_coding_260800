@@ -113,7 +113,7 @@ export async function GET() {
       }
     }
 
-    // ─── 삭제된 공지사항 감지 및 아카이빙 처리 ───
+    // ─── 삭제된 공지사항 감지 및 제거 처리 ───
     if (minNoticeNum !== Infinity && maxNoticeNum !== -Infinity) {
       try {
         // 기존 DB에서 해당 출처의 탐색 범위 내 공지사항 조회
@@ -128,19 +128,9 @@ export async function GET() {
           const deletedNotices = existingNotices.filter(n => !siteLiveIds.has(n.id));
 
           if (deletedNotices.length > 0) {
-            console.log(`[${site.name}] 삭제된 공지사항 ${deletedNotices.length}건 감지! 별도 DB로 아카이빙 중...`);
+            console.log(`[${site.name}] 삭제된 공지사항 ${deletedNotices.length}건 감지! DB에서 제거 중...`);
 
-            // 1. scnu_deleted_announcements 테이블에 백업 저장 시도
-            const archivePayload = deletedNotices.map(n => ({
-              ...n,
-              deleted_at: new Date().toISOString(),
-            }));
-
-            await supabase
-              .from('scnu_deleted_announcements')
-              .upsert(archivePayload, { onConflict: 'id' });
-
-            // 2. 활성 공지사항 테이블(scnu_announcements)에서 삭제하여 사용자 화면에서 숨김
+            // 활성 공지사항 테이블(scnu_announcements)에서 즉시 삭제
             const deletedIds = deletedNotices.map(n => n.id);
             await supabase
               .from('scnu_announcements')
@@ -151,14 +141,14 @@ export async function GET() {
           }
         }
       } catch (archErr: any) {
-        console.error(`[${site.name}] 삭제 아카이빙 중 에러:`, archErr.message);
+        console.error(`[${site.name}] 삭제 공지 정리 중 에러:`, archErr.message);
       }
     }
   }
 
   return NextResponse.json({
     success: results.errors.length === 0,
-    message: `총 ${results.total}개 처리 (${results.inserted}개 갱신/저장, ${results.deleted}개 삭제 아카이빙 완료)`,
+    message: `총 ${results.total}개 처리 (${results.inserted}개 갱신/저장, ${results.deleted}개 삭제 공지 정리 완료)`,
     errors: results.errors,
     updatedAt: new Date().toISOString(),
   });
