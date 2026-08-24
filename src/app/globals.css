@@ -701,8 +701,52 @@ body {
   cursor: not-allowed;
 }
 
-/* ─── 모바일 반응형 전면 최적화 ─── */
+/* ─── 정책 목록 및 사이드바 레이아웃 (데스크톱 기본) ─── */
+.policies-layout {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+  width: 100%;
+}
+
+.policies-sidebar {
+  width: 100%;
+  max-width: 320px;
+  padding: 24px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+}
+
+.policies-main {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+}
+
+.mobile-filter-toggle {
+  display: none;
+}
+
+@media (min-width: 769px) {
+  .nav-icon {
+    display: none;
+  }
+}
+
+/* ─── 모바일 반응형 전면 최적화 (768px 이하 최종 우선순위) ─── */
 @media (max-width: 768px) {
+  html, body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+  }
+
   .hero-title {
     font-size: 1.85rem !important;
     line-height: 1.25 !important;
@@ -716,13 +760,31 @@ body {
   }
 
   .glass-card {
-    padding: 20px 16px !important;
+    padding: 18px 14px !important;
     border-radius: 14px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
   }
 
   .grid-2 {
-    grid-template-columns: 1fr !important;
-    gap: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+    width: 100% !important;
+  }
+
+  .form-group {
+    width: 100% !important;
+    min-width: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .form-input, 
+  .form-select {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
   }
 
   .header-content {
@@ -758,7 +820,7 @@ body {
   }
 
   .main-content {
-    padding: 80px 12px 30px;
+    padding: 80px 10px 30px !important;
   }
 
   /* 모바일 공지사항 카드 레이아웃: 3단 카드 형태로 자동 변환 */
@@ -810,61 +872,44 @@ body {
     width: calc(100% - 32px);
   }
 
+  /* ─── 모바일 정책 검색 페이지 레이아웃 (세로 단일 컬럼 & 필터 토글) ─── */
   .policies-layout {
+    display: flex !important;
     flex-direction: column !important;
     gap: 16px !important;
-    margin: 16px auto !important;
-    padding: 0 12px !important;
+    margin: 12px auto !important;
+    padding: 0 10px !important;
+    width: 100% !important;
   }
 
   .mobile-filter-toggle {
     display: block !important;
     width: 100% !important;
+    margin-bottom: 8px !important;
   }
 
   .policies-sidebar {
+    width: 100% !important;
     max-width: 100% !important;
     position: static !important;
     max-height: none !important;
     overflow-y: visible !important;
     margin-bottom: 16px !important;
+    padding: 18px 14px !important;
   }
 
   .policies-sidebar.hidden-mobile {
     display: none !important;
   }
-}
 
-/* ─── 정책 목록 및 사이드바 레이아웃 (데스크톱 기본) ─── */
-.policies-layout {
-  display: flex;
-  gap: 30px;
-  align-items: flex-start;
-  max-width: 1200px;
-  margin: 40px auto;
-  padding: 0 20px;
-}
-
-.policies-sidebar {
-  width: 100%;
-  max-width: 320px;
-  padding: 24px;
-  flex-shrink: 0;
-  position: sticky;
-  top: 20px;
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
-}
-
-.mobile-filter-toggle {
-  display: none;
-}
-
-@media (min-width: 769px) {
-  .nav-icon {
-    display: none;
+  .policies-main {
+    width: 100% !important;
+    max-width: 100% !important;
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
   }
 }
+
 
 
 

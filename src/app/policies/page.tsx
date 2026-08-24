@@ -295,7 +295,7 @@ function PoliciesContent() {
       </aside>
 
       {/* 우측 본문 (결과 리스트) */}
-      <main style={{ flex: 1, minWidth: 0 }}>
+      <main className="policies-main">
         {error && (
           <div className="glass-card" style={{ border: '1px solid #ef4444', color: '#ef4444', marginBottom: '20px' }}>
             {error}
