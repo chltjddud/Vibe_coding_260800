@@ -131,14 +131,19 @@ function PoliciesContent() {
     setMarriage('');
   };
 
+  // 활성화된 필터 개수 계산
+  const activeFilterCount = [
+    zipCd, category, age, income, major, edu, job, marriage, keyword
+  ].filter(Boolean).length;
+
   return (
-    <div className="policies-layout">
+    <div style={{ maxWidth: '1200px', margin: '30px auto', padding: '0 16px', width: '100%', boxSizing: 'border-box' }}>
       
-      {/* 모바일 전용 상세 필터 접기/열기 버튼 */}
-      <div className="mobile-filter-toggle">
+      {/* ─── 📱 모바일 전용 상단 필터 바 ─── */}
+      <div className="md:hidden" style={{ marginBottom: '16px' }}>
         <button
           type="button"
-          onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
+          onClick={() => setIsMobileFilterOpen(true)}
           className="glass-card"
           style={{
             width: '100%',
@@ -147,155 +152,337 @@ function PoliciesContent() {
             alignItems: 'center',
             padding: '14px 18px',
             cursor: 'pointer',
-            border: isMobileFilterOpen ? '1px solid var(--accent-color)' : '1px solid var(--glass-border)',
-            background: isMobileFilterOpen ? 'rgba(59, 130, 246, 0.12)' : 'var(--glass-bg)',
+            border: activeFilterCount > 0 ? '1px solid var(--accent-color)' : '1px solid var(--glass-border)',
+            background: activeFilterCount > 0 ? 'rgba(59, 130, 246, 0.12)' : 'var(--glass-bg)',
             color: 'var(--text-primary)',
-            fontWeight: '600',
-            borderRadius: '12px',
+            borderRadius: '14px',
+            boxSizing: 'border-box',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Filter className="w-4 h-4 text-[var(--accent-color)]" />
-            <span>상세 검색 필터 {isMobileFilterOpen ? '접기 ▲' : '열기 ▼'}</span>
+            <span style={{ fontWeight: 'bold', fontSize: '15px' }}>상세 조건 필터</span>
+            {activeFilterCount > 0 && (
+              <span style={{ backgroundColor: 'var(--accent-color)', color: 'white', fontSize: '11px', fontWeight: 'bold', padding: '2px 8px', borderRadius: '100px' }}>
+                {activeFilterCount}개 선택됨
+              </span>
+            )}
           </div>
-          <span style={{ fontSize: '13px', color: 'var(--accent-color)' }}>
-            {isMobileFilterOpen ? '결과 바로보기' : '조건 변경/추가'}
+          <span style={{ fontSize: '13px', color: 'var(--accent-color)', fontWeight: 'bold' }}>
+            조건 변경하기 ⚙️
           </span>
         </button>
       </div>
 
-      {/* 좌측 사이드바 (상세 필터 영역) */}
-      <aside className={`glass-card policies-sidebar ${isMobileFilterOpen ? '' : 'hidden-mobile'}`}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', paddingBottom: '14px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Filter className="w-5 h-5 text-gray-300" />
-            <h2 style={{ fontSize: '18px', fontWeight: 'bold', margin: 0 }}>상세 필터</h2>
-          </div>
-          <button
-            type="button"
-            onClick={handleResetFilters}
+      {/* ─── 📱 모바일 전용 풀스크린/바텀시트 필터 모달 ─── */}
+      {isMobileFilterOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            zIndex: 99999,
+            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'flex-end',
+          }}
+          onClick={() => setIsMobileFilterOpen(false)}
+        >
+          <div
             style={{
-              background: 'transparent',
-              border: 'none',
-              color: 'var(--text-secondary)',
-              fontSize: '12px',
-              cursor: 'pointer',
+              backgroundColor: 'var(--bg-color)',
+              borderTop: '2px solid var(--accent-color)',
+              borderTopLeftRadius: '24px',
+              borderTopRightRadius: '24px',
+              padding: '24px 20px',
+              maxHeight: '85vh',
               display: 'flex',
-              alignItems: 'center',
-              gap: '4px',
-              padding: '4px 6px',
-              borderRadius: '4px',
+              flexDirection: 'column',
+              width: '100%',
+              boxSizing: 'border-box',
+              boxShadow: '0 -10px 40px rgba(0,0,0,0.5)',
             }}
-            className="hover:text-[var(--accent-color)] transition-colors"
-            title="필터 초기화"
+            onClick={(e) => e.stopPropagation()}
           >
-            <RotateCcw className="w-3.5 h-3.5" />
-            초기화
-          </button>
+            {/* 모달 상단 헤더 */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', paddingBottom: '14px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Filter className="w-5 h-5 text-[var(--accent-color)]" />
+                <h3 style={{ fontSize: '18px', fontWeight: 'bold', margin: 0, color: 'var(--text-primary)' }}>상세 조건 필터</h3>
+              </div>
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                <button
+                  type="button"
+                  onClick={handleResetFilters}
+                  style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+                >
+                  <RotateCcw className="w-3.5 h-3.5" /> 초기화
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsMobileFilterOpen(false)}
+                  style={{ background: 'rgba(255,255,255,0.1)', border: 'none', color: 'var(--text-primary)', width: '30px', height: '30px', borderRadius: '50%', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            {/* 모바일 스크롤 필터 입력 폼 */}
+            <div style={{ overflowY: 'auto', flex: 1, paddingRight: '4px', display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '18px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label className="form-label" style={{ fontWeight: '600' }}>거주 지역</label>
+                <RegionSelect options={REGION_CODES} value={zipCd} onChange={setZipCd} />
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label className="form-label" style={{ fontWeight: '600' }}>나이 (만)</label>
+                <div style={{ position: 'relative', width: '100%' }}>
+                  <input 
+                    type="number" 
+                    className="form-input" 
+                    placeholder="예: 25"
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
+                    style={{ width: '100%', paddingRight: '36px', boxSizing: 'border-box' }}
+                  />
+                  <span style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', fontSize: '14px', pointerEvents: 'none' }}>세</span>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label className="form-label" style={{ fontWeight: '600' }}>취업 상태</label>
+                <select className="form-select" value={job} onChange={(e) => setJob(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                  <option value="">전체 (선택 안함)</option>
+                  <option value="미취업자">미취업자 (구직자)</option>
+                  <option value="재직자">재직자</option>
+                  <option value="창업자">창업자 (예비창업자)</option>
+                  <option value="단기근로자">단기근로자 (프리랜서 등)</option>
+                  <option value="농어업인">농어업인</option>
+                </select>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label className="form-label" style={{ fontWeight: '600' }}>정책 분야</label>
+                <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                  {CATEGORIES.map(cat => (
+                    <option key={cat.value} value={cat.value}>{cat.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label className="form-label" style={{ fontWeight: '600' }}>결혼 상태</label>
+                <select className="form-select" value={marriage} onChange={(e) => setMarriage(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                  <option value="">전체 (선택 안함)</option>
+                  <option value="미혼">미혼</option>
+                  <option value="기혼">기혼</option>
+                </select>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label className="form-label" style={{ fontWeight: '600' }}>연소득 (만원)</label>
+                <input 
+                  type="number" 
+                  className="form-input" 
+                  placeholder="예: 3000"
+                  value={income}
+                  onChange={(e) => setIncome(e.target.value)}
+                  style={{ width: '100%', boxSizing: 'border-box' }}
+                />
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label className="form-label" style={{ fontWeight: '600' }}>전공분야</label>
+                <select className="form-select" value={major} onChange={(e) => setMajor(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                  <option value="">제한없음</option>
+                  <option value="인문">인문계열</option>
+                  <option value="사회">사회계열</option>
+                  <option value="교육">교육계열</option>
+                  <option value="공학">공학계열</option>
+                  <option value="자연">자연계열</option>
+                  <option value="의약">의약계열</option>
+                  <option value="예체능">예체능계열</option>
+                </select>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label className="form-label" style={{ fontWeight: '600' }}>학력</label>
+                <select className="form-select" value={edu} onChange={(e) => setEdu(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                  <option value="">제한없음</option>
+                  <option value="고졸">고졸 미만/고졸</option>
+                  <option value="대졸">대학(교) 재학/졸업</option>
+                  <option value="석사">석사 이상</option>
+                </select>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <label className="form-label" style={{ fontWeight: '600' }}>관심 키워드</label>
+                <input 
+                  type="text" 
+                  className="form-input" 
+                  placeholder="예: 창업, 월세, 자격증"
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  style={{ width: '100%', boxSizing: 'border-box' }}
+                />
+              </div>
+            </div>
+
+            {/* 모달 하단 고정 버튼 */}
+            <button
+              type="button"
+              onClick={() => { searchPolicies(); setIsMobileFilterOpen(false); }}
+              className="btn-primary"
+              style={{ width: '100%', padding: '14px', fontSize: '16px', fontWeight: 'bold' }}
+              disabled={loading}
+            >
+              {loading ? '검색 중...' : '조건 적용하여 결과 보기'}
+            </button>
+          </div>
         </div>
+      )}
 
-        <form onSubmit={(e) => { e.preventDefault(); searchPolicies(); }} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-semibold text-gray-300">거주 지역</label>
-            <RegionSelect options={REGION_CODES} value={zipCd} onChange={setZipCd} className="form-select w-full text-sm" />
-          </div>
-          
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-semibold text-gray-300">나이 (만)</label>
-            <input 
-              type="number" 
-              className="form-input w-full text-sm" 
-              placeholder="예: 25"
-              value={age}
-              onChange={(e) => setAge(e.target.value)}
-            />
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-semibold text-gray-300">취업 상태</label>
-            <select className="form-select w-full text-sm" value={job} onChange={(e) => setJob(e.target.value)}>
-              <option value="">전체 (선택 안함)</option>
-              <option value="미취업자">미취업자 (구직자)</option>
-              <option value="재직자">재직자</option>
-              <option value="창업자">창업자 (예비창업자)</option>
-              <option value="단기근로자">단기근로자 (프리랜서 등)</option>
-              <option value="농어업인">농어업인</option>
-            </select>
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-semibold text-gray-300">정책 분야</label>
-            <select className="form-select w-full text-sm" value={category} onChange={(e) => setCategory(e.target.value)}>
-              {CATEGORIES.map(cat => (
-                <option key={cat.value} value={cat.value}>{cat.name}</option>
-              ))}
-            </select>
+      {/* ─── 🖥️ 메인 레이아웃 (데스크톱에서는 사이드바+본문 분할, 모바일에서는 본문만 100%) ─── */}
+      <div style={{ display: 'flex', gap: '30px', alignItems: 'flex-start', width: '100%' }}>
+        
+        {/* 데스크톱 전용 좌측 사이드바 */}
+        <aside className="glass-card hidden md:block" style={{ width: '300px', padding: '24px', flexShrink: 0, position: 'sticky', top: '20px', maxHeight: 'calc(100vh - 40px)', overflowY: 'auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', paddingBottom: '14px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Filter className="w-5 h-5 text-gray-300" />
+              <h2 style={{ fontSize: '18px', fontWeight: 'bold', margin: 0 }}>상세 필터</h2>
+            </div>
+            <button
+              type="button"
+              onClick={handleResetFilters}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--text-secondary)',
+                fontSize: '12px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 6px',
+                borderRadius: '4px',
+              }}
+              className="hover:text-[var(--accent-color)] transition-colors"
+              title="필터 초기화"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              초기화
+            </button>
           </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-semibold text-gray-300">결혼 상태</label>
-            <select className="form-select w-full text-sm" value={marriage} onChange={(e) => setMarriage(e.target.value)}>
-              <option value="">전체 (선택 안함)</option>
-              <option value="미혼">미혼</option>
-              <option value="기혼">기혼</option>
-            </select>
-          </div>
+          <form onSubmit={(e) => { e.preventDefault(); searchPolicies(); }} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold text-gray-300">거주 지역</label>
+              <RegionSelect options={REGION_CODES} value={zipCd} onChange={setZipCd} className="form-select w-full text-sm" />
+            </div>
+            
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold text-gray-300">나이 (만)</label>
+              <div style={{ position: 'relative', width: '100%' }}>
+                <input 
+                  type="number" 
+                  className="form-input w-full text-sm" 
+                  placeholder="예: 25"
+                  value={age}
+                  onChange={(e) => setAge(e.target.value)}
+                  style={{ paddingRight: '30px', boxSizing: 'border-box' }}
+                />
+                <span style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', fontSize: '13px', pointerEvents: 'none' }}>세</span>
+              </div>
+            </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-semibold text-gray-300">연소득 (만원)</label>
-            <input 
-              type="number" 
-              className="form-input w-full text-sm" 
-              placeholder="예: 3000"
-              value={income}
-              onChange={(e) => setIncome(e.target.value)}
-            />
-          </div>
-          
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-semibold text-gray-300">전공분야</label>
-            <select className="form-select w-full text-sm" value={major} onChange={(e) => setMajor(e.target.value)}>
-              <option value="">제한없음</option>
-              <option value="인문">인문계열</option>
-              <option value="사회">사회계열</option>
-              <option value="교육">교육계열</option>
-              <option value="공학">공학계열</option>
-              <option value="자연">자연계열</option>
-              <option value="의약">의약계열</option>
-              <option value="예체능">예체능계열</option>
-            </select>
-          </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold text-gray-300">취업 상태</label>
+              <select className="form-select w-full text-sm" value={job} onChange={(e) => setJob(e.target.value)}>
+                <option value="">전체 (선택 안함)</option>
+                <option value="미취업자">미취업자 (구직자)</option>
+                <option value="재직자">재직자</option>
+                <option value="창업자">창업자 (예비창업자)</option>
+                <option value="단기근로자">단기근로자 (프리랜서 등)</option>
+                <option value="농어업인">농어업인</option>
+              </select>
+            </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-semibold text-gray-300">학력</label>
-            <select className="form-select w-full text-sm" value={edu} onChange={(e) => setEdu(e.target.value)}>
-              <option value="">제한없음</option>
-              <option value="고졸">고졸 미만/고졸</option>
-              <option value="대졸">대학(교) 재학/졸업</option>
-              <option value="석사">석사 이상</option>
-            </select>
-          </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold text-gray-300">정책 분야</label>
+              <select className="form-select w-full text-sm" value={category} onChange={(e) => setCategory(e.target.value)}>
+                {CATEGORIES.map(cat => (
+                  <option key={cat.value} value={cat.value}>{cat.name}</option>
+                ))}
+              </select>
+            </div>
 
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-semibold text-gray-300">관심 키워드</label>
-            <input 
-              type="text" 
-              className="form-input w-full text-sm" 
-              placeholder="예: 창업, 월세"
-              value={keyword}
-              onChange={(e) => setKeyword(e.target.value)}
-            />
-          </div>
-          
-          <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '12px', padding: '12px' }} disabled={loading}>
-            {loading ? '검색 중...' : '조건 적용하기'}
-          </button>
-        </form>
-      </aside>
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold text-gray-300">결혼 상태</label>
+              <select className="form-select w-full text-sm" value={marriage} onChange={(e) => setMarriage(e.target.value)}>
+                <option value="">전체 (선택 안함)</option>
+                <option value="미혼">미혼</option>
+                <option value="기혼">기혼</option>
+              </select>
+            </div>
 
-      {/* 우측 본문 (결과 리스트) */}
-      <main className="policies-main">
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold text-gray-300">연소득 (만원)</label>
+              <input 
+                type="number" 
+                className="form-input w-full text-sm" 
+                placeholder="예: 3000"
+                value={income}
+                onChange={(e) => setIncome(e.target.value)}
+              />
+            </div>
+            
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold text-gray-300">전공분야</label>
+              <select className="form-select w-full text-sm" value={major} onChange={(e) => setMajor(e.target.value)}>
+                <option value="">제한없음</option>
+                <option value="인문">인문계열</option>
+                <option value="사회">사회계열</option>
+                <option value="교육">교육계열</option>
+                <option value="공학">공학계열</option>
+                <option value="자연">자연계열</option>
+                <option value="의약">의약계열</option>
+                <option value="예체능">예체능계열</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold text-gray-300">학력</label>
+              <select className="form-select w-full text-sm" value={edu} onChange={(e) => setEdu(e.target.value)}>
+                <option value="">제한없음</option>
+                <option value="고졸">고졸 미만/고졸</option>
+                <option value="대졸">대학(교) 재학/졸업</option>
+                <option value="석사">석사 이상</option>
+              </select>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-semibold text-gray-300">관심 키워드</label>
+              <input 
+                type="text" 
+                className="form-input w-full text-sm" 
+                placeholder="예: 창업, 월세"
+                value={keyword}
+                onChange={(e) => setKeyword(e.target.value)}
+              />
+            </div>
+            
+            <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '12px', padding: '12px' }} disabled={loading}>
+              {loading ? '검색 중...' : '조건 적용하기'}
+            </button>
+          </form>
+        </aside>
+
+        {/* 본문 결과 리스트 (모바일에서는 화면 100% 차지) */}
+        <main style={{ flex: 1, minWidth: 0, width: '100%' }}>
         {error && (
           <div className="glass-card" style={{ border: '1px solid #ef4444', color: '#ef4444', marginBottom: '20px' }}>
             {error}
@@ -428,7 +615,8 @@ function PoliciesContent() {
             )}
           </div>
         )}
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

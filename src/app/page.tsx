@@ -219,25 +219,30 @@ export default function Home() {
                 </button>
               </div>
 
-              <div className="grid-2" style={{ textAlign: 'left' }}>
-                <div className="form-group" style={{ marginBottom: 0 }}>
+              <div className="grid-2" style={{ textAlign: 'left', width: '100%' }}>
+                <div className="form-group" style={{ marginBottom: 0, width: '100%' }}>
                   <label className="form-label">거주 지역</label>
                   <RegionSelect options={REGION_CODES} value={zipCd} onChange={setZipCd} />
                 </div>
                 
-                <div className="form-group" style={{ marginBottom: 0 }}>
+                <div className="form-group" style={{ marginBottom: 0, width: '100%' }}>
                   <label className="form-label">나이 (만)</label>
-                  <input 
-                    type="number" 
-                    className="form-input" 
-                    placeholder="예: 25"
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                    style={{ width: '100%', boxSizing: 'border-box' }}
-                  />
+                  <div style={{ position: 'relative', width: '100%' }}>
+                    <input 
+                      type="number" 
+                      className="form-input" 
+                      placeholder="예: 25"
+                      value={age}
+                      onChange={(e) => setAge(e.target.value)}
+                      style={{ width: '100%', paddingRight: '36px', boxSizing: 'border-box' }}
+                    />
+                    <span style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', fontSize: '14px', pointerEvents: 'none' }}>
+                      세
+                    </span>
+                  </div>
                 </div>
 
-                <div className="form-group" style={{ marginBottom: 0 }}>
+                <div className="form-group" style={{ marginBottom: 0, width: '100%' }}>
                   <label className="form-label">취업 상태</label>
                   <select className="form-select" value={job} onChange={(e) => setJob(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
                     <option value="">전체 (선택 안함)</option>
@@ -249,7 +254,7 @@ export default function Home() {
                   </select>
                 </div>
 
-                <div className="form-group" style={{ marginBottom: 0 }}>
+                <div className="form-group" style={{ marginBottom: 0, width: '100%' }}>
                   <label className="form-label">관심 분야</label>
                   <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
                     {CATEGORIES.map(cat => (
@@ -259,7 +264,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="form-group" style={{ textAlign: 'left', marginTop: '4px', marginBottom: 0 }}>
+              <div className="form-group" style={{ textAlign: 'left', marginTop: '4px', marginBottom: 0, width: '100%' }}>
                 <label className="form-label">키워드 검색</label>
                 <textarea 
                   className="form-input" 
@@ -272,22 +277,27 @@ export default function Home() {
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left', width: '100%' }}>
-              <div className="grid-2" style={{ textAlign: 'left' }}>
-                <div className="form-group" style={{ marginBottom: 0 }}>
+              <div className="grid-2" style={{ textAlign: 'left', width: '100%' }}>
+                <div className="form-group" style={{ marginBottom: 0, width: '100%' }}>
                   <label className="form-label">거주 지역</label>
                   <RegionSelect options={REGION_CODES} value={zipCd} onChange={setZipCd} />
                 </div>
                 
-                <div className="form-group" style={{ marginBottom: 0 }}>
+                <div className="form-group" style={{ marginBottom: 0, width: '100%' }}>
                   <label className="form-label">나이 (만)</label>
-                  <input 
-                    type="number" 
-                    className="form-input" 
-                    placeholder="예: 25"
-                    value={age}
-                    onChange={(e) => setAge(e.target.value)}
-                    style={{ width: '100%', boxSizing: 'border-box' }}
-                  />
+                  <div style={{ position: 'relative', width: '100%' }}>
+                    <input 
+                      type="number" 
+                      className="form-input" 
+                      placeholder="예: 25"
+                      value={age}
+                      onChange={(e) => setAge(e.target.value)}
+                      style={{ width: '100%', paddingRight: '36px', boxSizing: 'border-box' }}
+                    />
+                    <span style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', fontSize: '14px', pointerEvents: 'none' }}>
+                      세
+                    </span>
+                  </div>
                 </div>
               </div>
 
