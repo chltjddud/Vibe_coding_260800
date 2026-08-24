@@ -52,6 +52,7 @@ function PoliciesContent() {
   const [policies, setPolicies] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = useState(1);
@@ -60,6 +61,7 @@ function PoliciesContent() {
   const searchPolicies = async () => {
     setLoading(true);
     setError('');
+    setIsMobileFilterOpen(false); // 모바일에서 검색 시 필터 자동 접기
     setPolicies([]);
     setCurrentPage(1); // 검색 시 1페이지로 초기화
     
@@ -130,11 +132,41 @@ function PoliciesContent() {
   };
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '40px auto', padding: '0 20px', display: 'flex', gap: '30px', alignItems: 'flex-start' }} className="flex-col md:flex-row">
+    <div className="policies-layout">
       
+      {/* 모바일 전용 상세 필터 접기/열기 버튼 */}
+      <div className="mobile-filter-toggle">
+        <button
+          type="button"
+          onClick={() => setIsMobileFilterOpen(!isMobileFilterOpen)}
+          className="glass-card"
+          style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: '14px 18px',
+            cursor: 'pointer',
+            border: isMobileFilterOpen ? '1px solid var(--accent-color)' : '1px solid var(--glass-border)',
+            background: isMobileFilterOpen ? 'rgba(59, 130, 246, 0.12)' : 'var(--glass-bg)',
+            color: 'var(--text-primary)',
+            fontWeight: '600',
+            borderRadius: '12px',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Filter className="w-4 h-4 text-[var(--accent-color)]" />
+            <span>상세 검색 필터 {isMobileFilterOpen ? '접기 ▲' : '열기 ▼'}</span>
+          </div>
+          <span style={{ fontSize: '13px', color: 'var(--accent-color)' }}>
+            {isMobileFilterOpen ? '결과 바로보기' : '조건 변경/추가'}
+          </span>
+        </button>
+      </div>
+
       {/* 좌측 사이드바 (상세 필터 영역) */}
-      <aside className="glass-card" style={{ width: '100%', maxWidth: '320px', padding: '24px', flexShrink: 0, position: 'sticky', top: '20px', maxHeight: 'calc(100vh - 40px)', overflowY: 'auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', paddingBottom: '16px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+      <aside className={`glass-card policies-sidebar ${isMobileFilterOpen ? '' : 'hidden-mobile'}`}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', paddingBottom: '14px', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Filter className="w-5 h-5 text-gray-300" />
             <h2 style={{ fontSize: '18px', fontWeight: 'bold', margin: 0 }}>상세 필터</h2>

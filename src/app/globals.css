@@ -809,6 +809,55 @@ body {
     bottom: 16px;
     width: calc(100% - 32px);
   }
+
+  .policies-layout {
+    flex-direction: column !important;
+    gap: 16px !important;
+    margin: 16px auto !important;
+    padding: 0 12px !important;
+  }
+
+  .mobile-filter-toggle {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  .policies-sidebar {
+    max-width: 100% !important;
+    position: static !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+    margin-bottom: 16px !important;
+  }
+
+  .policies-sidebar.hidden-mobile {
+    display: none !important;
+  }
+}
+
+/* ─── 정책 목록 및 사이드바 레이아웃 (데스크톱 기본) ─── */
+.policies-layout {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.policies-sidebar {
+  width: 100%;
+  max-width: 320px;
+  padding: 24px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 20px;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+}
+
+.mobile-filter-toggle {
+  display: none;
 }
 
 @media (min-width: 769px) {
@@ -816,5 +865,6 @@ body {
     display: none;
   }
 }
+
 
 

@@ -219,58 +219,51 @@ export default function Home() {
                 </button>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', textAlign: 'left' }}>
-                <div className="flex gap-3 items-center">
-                  <label className="form-label" style={{ whiteSpace: 'nowrap', margin: 0, minWidth: '65px' }}>거주 지역</label>
-                  <div style={{ flex: 1 }}>
-                    <RegionSelect options={REGION_CODES} value={zipCd} onChange={setZipCd} />
-                  </div>
+              <div className="grid-2" style={{ textAlign: 'left' }}>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">거주 지역</label>
+                  <RegionSelect options={REGION_CODES} value={zipCd} onChange={setZipCd} />
                 </div>
                 
-                <div className="flex gap-3 items-center">
-                  <label className="form-label" style={{ whiteSpace: 'nowrap', margin: 0, minWidth: '65px' }}>나이 (만)</label>
-                  <div style={{ flex: 1 }}>
-                    <input 
-                      type="number" 
-                      className="form-input w-full" 
-                      placeholder="예: 25"
-                      value={age}
-                      onChange={(e) => setAge(e.target.value)}
-                    />
-                  </div>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">나이 (만)</label>
+                  <input 
+                    type="number" 
+                    className="form-input" 
+                    placeholder="예: 25"
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
+                    style={{ width: '100%', boxSizing: 'border-box' }}
+                  />
                 </div>
 
-                <div className="flex gap-3 items-center">
-                  <label className="form-label" style={{ whiteSpace: 'nowrap', margin: 0, minWidth: '65px' }}>취업 상태</label>
-                  <div style={{ flex: 1 }}>
-                    <select className="form-select w-full" value={job} onChange={(e) => setJob(e.target.value)}>
-                      <option value="">전체 (선택 안함)</option>
-                      <option value="미취업자">미취업자 (구직자)</option>
-                      <option value="재직자">재직자</option>
-                      <option value="창업자">창업자 (예비창업자)</option>
-                      <option value="단기근로자">단기근로자 (프리랜서 등)</option>
-                      <option value="농어업인">농어업인</option>
-                    </select>
-                  </div>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">취업 상태</label>
+                  <select className="form-select" value={job} onChange={(e) => setJob(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                    <option value="">전체 (선택 안함)</option>
+                    <option value="미취업자">미취업자 (구직자)</option>
+                    <option value="재직자">재직자</option>
+                    <option value="창업자">창업자 (예비창업자)</option>
+                    <option value="단기근로자">단기근로자 (프리랜서 등)</option>
+                    <option value="농어업인">농어업인</option>
+                  </select>
                 </div>
 
-                <div className="flex gap-3 items-center">
-                  <label className="form-label" style={{ whiteSpace: 'nowrap', margin: 0, minWidth: '65px' }}>관심 분야</label>
-                  <div style={{ flex: 1 }}>
-                    <select className="form-select w-full" value={category} onChange={(e) => setCategory(e.target.value)}>
-                      {CATEGORIES.map(cat => (
-                        <option key={cat.value} value={cat.value}>{cat.name}</option>
-                      ))}
-                    </select>
-                  </div>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">관심 분야</label>
+                  <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                    {CATEGORIES.map(cat => (
+                      <option key={cat.value} value={cat.value}>{cat.name}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', gap: '16px', alignItems: 'center', textAlign: 'left', marginTop: '4px' }}>
-                <label className="form-label" style={{ whiteSpace: 'nowrap', margin: 0 }}>키워드 검색</label>
+              <div className="form-group" style={{ textAlign: 'left', marginTop: '4px', marginBottom: 0 }}>
+                <label className="form-label">키워드 검색</label>
                 <textarea 
                   className="form-input" 
-                  style={{ flex: 1, height: '48px', boxSizing: 'border-box', resize: 'none' }}
+                  style={{ width: '100%', height: '48px', boxSizing: 'border-box', resize: 'none' }}
                   placeholder="예: 전세금, 자격증, 면접"
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
@@ -279,25 +272,22 @@ export default function Home() {
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left', width: '100%' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                <div className="flex gap-3 items-center">
-                  <label className="form-label" style={{ whiteSpace: 'nowrap', margin: 0, minWidth: '65px' }}>거주 지역</label>
-                  <div style={{ flex: 1 }}>
-                    <RegionSelect options={REGION_CODES} value={zipCd} onChange={setZipCd} />
-                  </div>
+              <div className="grid-2" style={{ textAlign: 'left' }}>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">거주 지역</label>
+                  <RegionSelect options={REGION_CODES} value={zipCd} onChange={setZipCd} />
                 </div>
                 
-                <div className="flex gap-3 items-center">
-                  <label className="form-label" style={{ whiteSpace: 'nowrap', margin: 0, minWidth: '65px' }}>나이 (만)</label>
-                  <div style={{ flex: 1 }}>
-                    <input 
-                      type="number" 
-                      className="form-input w-full" 
-                      placeholder="예: 25"
-                      value={age}
-                      onChange={(e) => setAge(e.target.value)}
-                    />
-                  </div>
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">나이 (만)</label>
+                  <input 
+                    type="number" 
+                    className="form-input" 
+                    placeholder="예: 25"
+                    value={age}
+                    onChange={(e) => setAge(e.target.value)}
+                    style={{ width: '100%', boxSizing: 'border-box' }}
+                  />
                 </div>
               </div>
 
