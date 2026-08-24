@@ -131,17 +131,17 @@ export default function AnnouncementsPage() {
   };
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '40px 20px' }}>
-      <div style={{ marginBottom: '32px' }}>
-        <Link href="/" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '14px' }}>
+    <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '20px 12px', width: '100%', boxSizing: 'border-box' }}>
+      <div style={{ marginBottom: '24px' }}>
+        <Link href="/" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '13px', display: 'inline-block', marginBottom: '12px' }}>
           ← 메인으로 돌아가기
         </Link>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginTop: '16px', marginBottom: '8px' }}>
-          <div>
-            <h1 style={{ fontSize: '32px', fontWeight: '700', margin: '0 0 8px 0' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: '8px' }}>
+          <div style={{ flex: 1, minWidth: '240px' }}>
+            <h1 style={{ fontSize: 'clamp(22px, 4vw, 32px)', fontWeight: '700', margin: '0 0 8px 0', wordBreak: 'keep-all', lineHeight: '1.3' }}>
               학교 주요 공지사항 전체보기
             </h1>
-            <p style={{ color: 'var(--text-secondary)', margin: 0 }}>
+            <p style={{ color: 'var(--text-secondary)', margin: 0, fontSize: '14px', wordBreak: 'keep-all' }}>
               학교 본부, SW중심대학, AI인재양성 사업단의 공지사항을 한 곳에서 모아보세요.
               {!loading && <span style={{ marginLeft: '8px' }}>총 <strong>{total}</strong>개</span>}
             </p>
@@ -151,6 +151,7 @@ export default function AnnouncementsPage() {
             disabled={isSyncing}
             className="sync-btn"
             title="순천대 최신 공지사항을 지금 즉시 스크래핑하여 Supabase에 저장합니다."
+            style={{ flexShrink: 0 }}
           >
             <RefreshCw className={`w-4 h-4 text-blue-400 ${isSyncing ? 'animate-spin' : ''}`} />
             <span>{isSyncing ? '동기화 중...' : '최신 공지 동기화'}</span>

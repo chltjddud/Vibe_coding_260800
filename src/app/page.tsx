@@ -186,11 +186,11 @@ export default function Home() {
           핵심 정보만 입력하고 나에게 꼭 맞는 지원 정책과 혜택을 1초만에 찾아보세요.
         </p>
 
-        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '24px' }}>
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '24px', width: '100%', maxWidth: '420px', margin: '0 auto 24px' }}>
           <button 
             type="button"
             className={activeTab === 'normal' ? 'btn-primary' : 'glass-card'} 
-            style={{ padding: '12px 24px', flex: 1, maxWidth: '200px' }}
+            style={{ padding: '12px 16px', flex: 1, minWidth: 0, fontSize: '14px', fontWeight: '600' }}
             onClick={() => { setActiveTab('normal'); setAiRecommendations([]); }}
           >
             일반 맞춤 검색
@@ -198,21 +198,21 @@ export default function Home() {
           <button 
             type="button"
             className={activeTab === 'ai' ? 'btn-primary' : 'glass-card'} 
-            style={{ padding: '12px 24px', flex: 1, maxWidth: '200px', background: activeTab === 'ai' ? 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)' : '', color: activeTab === 'ai' ? 'white' : '' }}
+            style={{ padding: '12px 16px', flex: 1, minWidth: 0, fontSize: '14px', fontWeight: '600', background: activeTab === 'ai' ? 'linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%)' : '', color: activeTab === 'ai' ? 'white' : '' }}
             onClick={() => { setActiveTab('ai'); setHasSearched(false); }}
           >
             AI 상황 맞춤 추천
           </button>
         </div>
 
-        <form className="glass-card" style={{ maxWidth: '720px', margin: '0 auto' }} onSubmit={activeTab === 'normal' ? handleSearch : (e) => { e.preventDefault(); handleAIRecommend(); }}>
+        <form className="glass-card" style={{ maxWidth: '720px', margin: '0 auto', width: '100%', boxSizing: 'border-box' }} onSubmit={activeTab === 'normal' ? handleSearch : (e) => { e.preventDefault(); handleAIRecommend(); }}>
           {activeTab === 'normal' ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '-8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '-4px' }}>
                 <button 
                   type="button" 
                   onClick={handleViewAll} 
-                  style={{ background: 'transparent', border: 'none', color: 'var(--accent-color)', fontSize: '14px', fontWeight: '600', cursor: 'pointer', transition: 'opacity 0.2s' }}
+                  style={{ background: 'transparent', border: 'none', color: 'var(--accent-color)', fontSize: '13px', fontWeight: '600', cursor: 'pointer', transition: 'opacity 0.2s', padding: '4px 0' }}
                   className="hover:opacity-80"
                 >
                   더 많은 조건으로 찾기(상세 필터) →
@@ -220,21 +220,21 @@ export default function Home() {
               </div>
 
               <div className="grid-2" style={{ textAlign: 'left', width: '100%' }}>
-                <div className="form-group" style={{ marginBottom: 0, width: '100%' }}>
+                <div className="form-group" style={{ marginBottom: 0, width: '100%', minWidth: 0 }}>
                   <label className="form-label">거주 지역</label>
                   <RegionSelect options={REGION_CODES} value={zipCd} onChange={setZipCd} />
                 </div>
                 
-                <div className="form-group" style={{ marginBottom: 0, width: '100%' }}>
+                <div className="form-group" style={{ marginBottom: 0, width: '100%', minWidth: 0 }}>
                   <label className="form-label">나이 (만)</label>
-                  <div style={{ position: 'relative', width: '100%' }}>
+                  <div style={{ position: 'relative', width: '100%', minWidth: 0 }}>
                     <input 
                       type="number" 
                       className="form-input" 
                       placeholder="예: 25"
                       value={age}
                       onChange={(e) => setAge(e.target.value)}
-                      style={{ width: '100%', paddingRight: '36px', boxSizing: 'border-box' }}
+                      style={{ width: '100%', minWidth: 0, paddingRight: '36px', boxSizing: 'border-box' }}
                     />
                     <span style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', fontSize: '14px', pointerEvents: 'none' }}>
                       세
@@ -242,9 +242,9 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="form-group" style={{ marginBottom: 0, width: '100%' }}>
+                <div className="form-group" style={{ marginBottom: 0, width: '100%', minWidth: 0 }}>
                   <label className="form-label">취업 상태</label>
-                  <select className="form-select" value={job} onChange={(e) => setJob(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                  <select className="form-select" value={job} onChange={(e) => setJob(e.target.value)} style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
                     <option value="">전체 (선택 안함)</option>
                     <option value="미취업자">미취업자 (구직자)</option>
                     <option value="재직자">재직자</option>
@@ -254,9 +254,9 @@ export default function Home() {
                   </select>
                 </div>
 
-                <div className="form-group" style={{ marginBottom: 0, width: '100%' }}>
+                <div className="form-group" style={{ marginBottom: 0, width: '100%', minWidth: 0 }}>
                   <label className="form-label">관심 분야</label>
-                  <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)} style={{ width: '100%', boxSizing: 'border-box' }}>
+                  <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)} style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
                     {CATEGORIES.map(cat => (
                       <option key={cat.value} value={cat.value}>{cat.name}</option>
                     ))}
@@ -264,11 +264,11 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="form-group" style={{ textAlign: 'left', marginTop: '4px', marginBottom: 0, width: '100%' }}>
+              <div className="form-group" style={{ textAlign: 'left', marginTop: '4px', marginBottom: 0, width: '100%', minWidth: 0 }}>
                 <label className="form-label">키워드 검색</label>
                 <textarea 
                   className="form-input" 
-                  style={{ width: '100%', height: '48px', boxSizing: 'border-box', resize: 'none' }}
+                  style={{ width: '100%', minWidth: 0, height: '48px', boxSizing: 'border-box', resize: 'none' }}
                   placeholder="예: 전세금, 자격증, 면접"
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
@@ -276,23 +276,23 @@ export default function Home() {
               </div>
             </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left', width: '100%' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left', width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
               <div className="grid-2" style={{ textAlign: 'left', width: '100%' }}>
-                <div className="form-group" style={{ marginBottom: 0, width: '100%' }}>
+                <div className="form-group" style={{ marginBottom: 0, width: '100%', minWidth: 0 }}>
                   <label className="form-label">거주 지역</label>
                   <RegionSelect options={REGION_CODES} value={zipCd} onChange={setZipCd} />
                 </div>
                 
-                <div className="form-group" style={{ marginBottom: 0, width: '100%' }}>
+                <div className="form-group" style={{ marginBottom: 0, width: '100%', minWidth: 0 }}>
                   <label className="form-label">나이 (만)</label>
-                  <div style={{ position: 'relative', width: '100%' }}>
+                  <div style={{ position: 'relative', width: '100%', minWidth: 0 }}>
                     <input 
                       type="number" 
                       className="form-input" 
                       placeholder="예: 25"
                       value={age}
                       onChange={(e) => setAge(e.target.value)}
-                      style={{ width: '100%', paddingRight: '36px', boxSizing: 'border-box' }}
+                      style={{ width: '100%', minWidth: 0, paddingRight: '36px', boxSizing: 'border-box' }}
                     />
                     <span style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)', fontSize: '14px', pointerEvents: 'none' }}>
                       세
@@ -301,9 +301,9 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-1" style={{ width: '100%', minWidth: 0 }}>
                 <label className="form-label">관심 키워드 선택 (추천 속도 UP)</label>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', width: '100%' }}>
                   {['월세', '전세', '취업', '면접', '자격증', '창업', '심리상담', '기타'].map(kw => (
                     <button
                       key={kw}
@@ -331,20 +331,20 @@ export default function Home() {
                       placeholder="키워드 직접 입력"
                       value={customAIKeyword}
                       onChange={(e) => setCustomAIKeyword(e.target.value)}
-                      style={{ padding: '4px 12px', height: '34px', borderRadius: '16px', fontSize: '14px', width: '130px' }}
+                      style={{ padding: '4px 12px', height: '34px', borderRadius: '16px', fontSize: '14px', width: '130px', minWidth: 0 }}
                     />
                   )}
                 </div>
               </div>
 
-              <div className="flex flex-col gap-1" style={{ width: '100%' }}>
+              <div className="flex flex-col gap-1" style={{ width: '100%', minWidth: 0 }}>
                 <label className="form-label">현재 상황 및 고민</label>
                 <textarea 
                   className="form-input" 
                   placeholder="예: 25살 대학생인데 월세가 너무 비싸서 주거비 지원을 받고 싶어요."
                   value={situation}
                   onChange={(e) => setSituation(e.target.value)}
-                  style={{ width: '100%', resize: 'none', height: '120px', padding: '16px', boxSizing: 'border-box' }}
+                  style={{ width: '100%', minWidth: 0, resize: 'none', height: '120px', padding: '16px', boxSizing: 'border-box' }}
                 />
               </div>
             </div>

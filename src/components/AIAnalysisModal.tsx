@@ -99,19 +99,19 @@ ${aiResult.summary}
   if (!isOpen || !announcement) return null;
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={onClose}>
-      <div style={{ width: '100%', maxWidth: '600px', padding: '0', overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'column', maxHeight: '90vh', backgroundColor: 'var(--bg-color)', borderRadius: 'var(--radius-lg)', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)', border: '1px solid var(--glass-border)' }} onClick={e => e.stopPropagation()}>
-        <div style={{ padding: '20px', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'rgba(255, 255, 255, 0.03)' }}>
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '12px', boxSizing: 'border-box' }} onClick={onClose}>
+      <div style={{ width: '100%', maxWidth: '600px', padding: '0', overflow: 'hidden', position: 'relative', display: 'flex', flexDirection: 'column', maxHeight: '90vh', backgroundColor: 'var(--bg-color)', borderRadius: 'var(--radius-lg)', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)', border: '1px solid var(--glass-border)', boxSizing: 'border-box' }} onClick={e => e.stopPropagation()}>
+        <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--glass-border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'rgba(255, 255, 255, 0.03)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <Sparkles className="w-5 h-5 text-blue-400" />
-            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 'bold', color: 'var(--text-primary)' }}>AI 공지사항 분석</h3>
+            <h3 style={{ margin: 0, fontSize: '17px', fontWeight: 'bold', color: 'var(--text-primary)' }}>AI 공지사항 분석</h3>
           </div>
           <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '4px' }} className="hover:text-white transition-colors">
             <X className="w-6 h-6" />
           </button>
         </div>
         
-        <div style={{ padding: '24px', overflowY: 'auto' }}>
+        <div style={{ padding: '18px 16px', overflowY: 'auto' }}>
           <h4 style={{ margin: '0 0 16px 0', fontSize: '16px', lineHeight: 1.4 }}>{announcement.title}</h4>
           
           {isAnalyzing ? (
