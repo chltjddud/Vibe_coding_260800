@@ -76,13 +76,27 @@ async function scrapeOnePage(site: { id: string; name: string; baseUrl: string; 
 }
 
 export async function GET() {
-  const results = { total: 0, inserted: 0, errors: [] as string[] };
+  const results = { total: 0, inserted: 0, deleted: 0, errors: [] as string[] };
 
   for (const site of TARGET_SITES) {
+    const siteLiveNotices: any[] = [];
+    const siteLiveIds = new Set<string>();
+    let minNoticeNum = Infinity;
+    let maxNoticeNum = -Infinity;
+
     for (let page = 1; page <= site.maxPages; page++) {
       try {
         const notices = await scrapeOnePage(site, page);
-        if (notices.length === 0) break; // 더 이상 게시글이 없으면 중단
+        if (notices.length === 0) break;
+
+        for (const n of notices) {
+          siteLiveNotices.push(n);
+          siteLiveIds.add(n.id);
+          if (n.notice_num < 999990000) { // 일반 공지 번호 범위만 추적
+            if (n.notice_num < minNoticeNum) minNoticeNum = n.notice_num;
+            if (n.notice_num > maxNoticeNum) maxNoticeNum = n.notice_num;
+          }
+        }
 
         const { error } = await supabase
           .from('scnu_announcements')
@@ -98,11 +112,53 @@ export async function GET() {
         results.errors.push(`${site.name} 페이지${page}: ${err.message}`);
       }
     }
+
+    // ─── 삭제된 공지사항 감지 및 아카이빙 처리 ───
+    if (minNoticeNum !== Infinity && maxNoticeNum !== -Infinity) {
+      try {
+        // 기존 DB에서 해당 출처의 탐색 범위 내 공지사항 조회
+        const { data: existingNotices } = await supabase
+          .from('scnu_announcements')
+          .select('*')
+          .eq('source_id', site.id)
+          .gte('notice_num', minNoticeNum)
+          .lte('notice_num', maxNoticeNum);
+
+        if (existingNotices && existingNotices.length > 0) {
+          const deletedNotices = existingNotices.filter(n => !siteLiveIds.has(n.id));
+
+          if (deletedNotices.length > 0) {
+            console.log(`[${site.name}] 삭제된 공지사항 ${deletedNotices.length}건 감지! 별도 DB로 아카이빙 중...`);
+
+            // 1. scnu_deleted_announcements 테이블에 백업 저장 시도
+            const archivePayload = deletedNotices.map(n => ({
+              ...n,
+              deleted_at: new Date().toISOString(),
+            }));
+
+            await supabase
+              .from('scnu_deleted_announcements')
+              .upsert(archivePayload, { onConflict: 'id' });
+
+            // 2. 활성 공지사항 테이블(scnu_announcements)에서 삭제하여 사용자 화면에서 숨김
+            const deletedIds = deletedNotices.map(n => n.id);
+            await supabase
+              .from('scnu_announcements')
+              .delete()
+              .in('id', deletedIds);
+
+            results.deleted += deletedNotices.length;
+          }
+        }
+      } catch (archErr: any) {
+        console.error(`[${site.name}] 삭제 아카이빙 중 에러:`, archErr.message);
+      }
+    }
   }
 
   return NextResponse.json({
     success: results.errors.length === 0,
-    message: `총 ${results.total}개 처리, ${results.inserted}개 저장 완료`,
+    message: `총 ${results.total}개 처리 (${results.inserted}개 갱신/저장, ${results.deleted}개 삭제 아카이빙 완료)`,
     errors: results.errors,
     updatedAt: new Date().toISOString(),
   });
@@ -111,4 +167,5 @@ export async function GET() {
 export async function POST() {
   return GET();
 }
+
 
